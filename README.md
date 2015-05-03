@@ -1,6 +1,8 @@
-# unite-tselect
+# unite-tselect2
 
 ## Introduction
+
+This is a fork of [unite-tselect](https://github.com/eiiches/unite-tselect).
 
 `unite-tselect` is a [unite.vim](https://github.com/Shougo/unite.vim) source plugin
 for selecting tags, which provides a similar functionality as :tselect command.
