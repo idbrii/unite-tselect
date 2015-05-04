@@ -1,7 +1,8 @@
 "=============================================================================
 " FILE: tselect.vim
-" AUTHOR: Eiichi Sato <sato.eiichi@gmail.com>
-" Last Modified: 30 Jan 2012
+" AUTHOR: Eiichi Sato <sato.eiichi@gmail.com>,
+"		  Andrew Pyatkov <mrbiggfoot@gmail.com>
+" Last Modified: 03 May 2015
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -30,19 +31,22 @@ set cpo&vim
 let s:source = {
 	\ 'name': 'tselect',
 	\ 'description': 'candidates from :tselect',
-	\ 'hooks': {}
 	\ }
 
-function! s:source.hooks.on_init(args, context)
-endfunction
-
 function! s:format_tag(tag)
-	return '['. a:tag.kind . '] ' . a:tag.name . '   ' . a:tag.cmd . '   ' . a:tag.filename
+	let l:str = substitute(a:tag.cmd, '/^', '', '')
+	let l:str = substitute(l:str, '^\s\+', '', '')
+	let l:str = substitute(l:str, '$/', '', '')
+	return '['. a:tag.kind . '] ' . a:tag.filename . ': ' . l:str
 endfunction
 
 function! s:source.gather_candidates(args, context)
 	let l:result = []
-	let l:expr = get(a:args, 0, '') " FIXME: defaults to last used tag
+	if empty(a:args)
+		let l:expr = '\<' . expand("<cword>") . '\>'
+	else
+		let l:expr = '\<' . get(a:args, 0, '') . '\>'
+	endif
 
 	let l:taglist = taglist(l:expr)
 	for l:tag in l:taglist
