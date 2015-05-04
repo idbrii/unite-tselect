@@ -40,6 +40,12 @@ function! s:format_tag(tag)
 	return '['. a:tag.kind . '] ' . a:tag.filename . ': ' . l:str
 endfunction
 
+function! s:convert_cmd(cmd)
+	let l:cmd = substitute(a:cmd, '/^', '^', '')
+	let l:cmd = substitute(l:cmd, '$/', '$', '')
+	return l:cmd
+endfunction
+
 function! s:source.gather_candidates(args, context)
 	let l:result = []
 	if empty(a:args)
@@ -53,9 +59,9 @@ function! s:source.gather_candidates(args, context)
 		let l:item = {
 			\ 'word': s:format_tag(l:tag),
 			\ 'source': 'tselect',
-			\ 'kind': 'tag_list',
-			\ 'action__tag_cmd': l:tag.cmd,
-			\ 'action__tag_filename': l:tag.filename
+			\ 'kind': 'jump_list',
+			\ 'action__path': l:tag.filename,
+			\ 'action__pattern': s:convert_cmd(l:tag.cmd)
 			\ }
 		call add(l:result, l:item)
 	endfor
