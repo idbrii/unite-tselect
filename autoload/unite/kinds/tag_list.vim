@@ -49,6 +49,7 @@ endfunction
 
 function! s:jump_cmd(cmd)
 	silent! execute s:convert_cmd(a:cmd)
+	execute 'match Search /\%'.line('.').'l/'
 endfunction
 
 let s:kind.action_table.open = {
