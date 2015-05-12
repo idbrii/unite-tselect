@@ -31,13 +31,17 @@ set cpo&vim
 let s:source = {
 	\ 'name': 'tselect',
 	\ 'description': 'candidates from :tselect',
-	\ }
+	\ 'syntax': 'uniteSource__tselect',
+	\ 'hooks': {
+		\ 'on_syntax': function("unite#sources#tselect#on_syntax"),
+	\ },
+\ }
 
 function! s:format_tag(tag)
 	let l:str = substitute(a:tag.cmd, '/^', '', '')
 	let l:str = substitute(l:str, '^\s\+', '', '')
 	let l:str = substitute(l:str, '$/', '', '')
-	return '['. a:tag.kind . '] ' . a:tag.filename . ': ' . l:str
+	return '['. a:tag.kind . '] ' . a:tag.filename . ":\t" . l:str
 endfunction
 
 function! s:convert_cmd(cmd)
@@ -71,6 +75,12 @@ endfunction
 
 function! unite#sources#tselect#define()
 	return s:source
+endfunction
+
+function! unite#sources#tselect#on_syntax(args, context)
+	syntax match uniteSource__tselect_TagType /\[.\{-}\]/ contained containedin=uniteSource__tselect
+	syntax match uniteSource__tselect_Path / [^:]*/ contained containedin=uniteSource__tselect
+	syntax match uniteSource__tselect_Item /:.*/ contained containedin=uniteSource__tselect
 endfunction
 
 let &cpo = s:save_cpo
