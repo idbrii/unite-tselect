@@ -47,6 +47,7 @@ endfunction
 function! s:convert_cmd(cmd)
 	let l:cmd = substitute(a:cmd, '/^', '^', '')
 	let l:cmd = substitute(l:cmd, '$/', '$', '')
+	let l:cmd = escape(l:cmd, '*[]')
 	return l:cmd
 endfunction
 
@@ -62,7 +63,6 @@ function! s:source.gather_candidates(args, context)
 	for l:tag in l:taglist
 		let l:item = {
 			\ 'word': s:format_tag(l:tag),
-			\ 'source': 'tselect',
 			\ 'kind': 'jump_list',
 			\ 'action__path': l:tag.filename,
 			\ 'action__pattern': s:convert_cmd(l:tag.cmd)
