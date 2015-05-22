@@ -37,6 +37,13 @@ let s:source = {
 	\ },
 \ }
 
+function! s:read_line_fmt(tag)
+	let l:line = system("sed '" . a:tag.cmd . "q;d' " . a:tag.filename)
+	let l:line = substitute(l:line, '^\s\+', '', '')
+	let l:line = substitute(l:line, "\n", "", "")
+	return '['. a:tag.kind . '] ' . a:tag.filename . ":\t" . l:line
+endfunction
+
 function! s:format_tag(tag)
 	let l:str = substitute(a:tag.cmd, '/^', '', '')
 	let l:str = substitute(l:str, '^\s\+', '', '')
@@ -63,7 +70,7 @@ function! s:source.gather_candidates(args, context)
 	for l:tag in l:taglist
 		if l:tag.cmd =~ '^\d\+$'
 			let l:item = {
-				\ 'word': s:format_tag(l:tag),
+				\ 'word': s:read_line_fmt(l:tag),
 				\ 'kind': 'jump_list',
 				\ 'action__path': l:tag.filename,
 				\ 'action__line': l:tag.cmd,
