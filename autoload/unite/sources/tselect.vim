@@ -61,12 +61,21 @@ function! s:source.gather_candidates(args, context)
 
 	let l:taglist = taglist(l:expr)
 	for l:tag in l:taglist
-		let l:item = {
-			\ 'word': s:format_tag(l:tag),
-			\ 'kind': 'jump_list',
-			\ 'action__path': l:tag.filename,
-			\ 'action__pattern': s:convert_cmd(l:tag.cmd)
-			\ }
+		if l:tag.cmd =~ '^\d\+$'
+			let l:item = {
+				\ 'word': s:format_tag(l:tag),
+				\ 'kind': 'jump_list',
+				\ 'action__path': l:tag.filename,
+				\ 'action__line': l:tag.cmd,
+				\ }
+		else
+			let l:item = {
+				\ 'word': s:format_tag(l:tag),
+				\ 'kind': 'jump_list',
+				\ 'action__path': l:tag.filename,
+				\ 'action__pattern': s:convert_cmd(l:tag.cmd)
+				\ }
+		endif
 		call add(l:result, l:item)
 	endfor
 
