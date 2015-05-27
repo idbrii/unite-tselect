@@ -63,7 +63,7 @@ function! s:source.gather_candidates(args, context)
 	if empty(a:args)
 		let l:expr = '\<' . expand("<cword>") . '\>'
 	else
-		let l:expr = '\<' . get(a:args, 0, '') . '\>'
+		let l:expr = get(a:args, 0, '')
 	endif
 
 	let l:taglist = taglist(l:expr)
