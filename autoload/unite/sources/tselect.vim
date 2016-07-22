@@ -54,19 +54,19 @@ endfunction
 function! s:convert_cmd(cmd)
 	let l:cmd = substitute(a:cmd, '/^', '^', '')
 	let l:cmd = substitute(l:cmd, '$/', '$', '')
-	let l:cmd = escape(l:cmd, '*[]')
+	let l:cmd = escape(l:cmd, '*[]~')
 	return l:cmd
 endfunction
 
 function! s:source.gather_candidates(args, context)
 	let l:result = []
 	if empty(a:args)
-		let l:expr = '\<' . expand("<cword>") . '\>'
+		let l:expr = '^' . expand("<cword>") . '$'
 	else
 		let l:expr = get(a:args, 0, '')
 	endif
 
-	let l:taglist = taglist(l:expr)
+	let l:taglist = taglist(escape(l:expr, '~'))
 	for l:tag in l:taglist
 		if l:tag.cmd =~ '^\d\+$'
 			let l:item = {
