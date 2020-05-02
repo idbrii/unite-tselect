@@ -41,15 +41,26 @@ function! s:read_line_fmt(tag)
 	let l:line = system("sed '" . a:tag.cmd . "q;d' " . a:tag.filename)
 	let l:line = substitute(l:line, '^\s\+', '', '')
 	let l:line = substitute(l:line, "\n", "", "")
-	return '['. a:tag.kind . '] ' . a:tag.filename . ":\t" . l:line
+	return s:output_for_tag(a:tag, l:line)
 endfunction
 
 function! s:format_tag(tag)
 	let l:str = substitute(a:tag.cmd, '/^', '', '')
 	let l:str = substitute(l:str, '^\s\+', '', '')
 	let l:str = substitute(l:str, '$/', '', '')
-	return '['. a:tag.kind . '] ' . a:tag.filename . ":\t" . l:str
+	return s:output_for_tag(a:tag, l:str)
 endfunction
+
+function! s:output_for_tag(tag, definition)
+	" Display the kind, minimal file name, and definition line. Omit the tag
+	" because it's in the definition and the more information we include, the
+	" harder it is to understand anything. Would be great if we could
+	" highlight it somehow. Display the information aligned which makes it
+	" much easier to recognize the three columns of information.
+	let win_width = getwininfo(win_getid())[0]['width']
+	let quarter_fmt = '%-'. (win_width / 4) .'s' " Something like %-25s
+	return printf("[%s] ". quarter_fmt ."\t\t%s", a:tag.kind, fnamemodify(a:tag.filename, ':t'), a:definition)
+endf
 
 function! s:convert_cmd(cmd)
 	let l:cmd = substitute(a:cmd, '/^', '^', '')
