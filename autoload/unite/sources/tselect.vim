@@ -71,10 +71,22 @@ endfunction
 
 function! s:source.gather_candidates(args, context)
 	let l:result = []
+	let l:expr = ''
 	if empty(a:args)
-		let l:expr = '^' . expand("<cword>") . '$'
+		try
+			" Extract the last jumped tag to behave like :tselect.
+			let l:expr = execute('tags')->split('\n')[-2]->split(' ', 0)[3]
+		catch
+			" Ignore any errors and we'll fall back to cword below.
+		endtry
 	else
 		let l:expr = get(a:args, 0, '')
+	endif
+
+	" If we still have nothing, use the cursor. This seems more helpful than
+	" :tselect's error about the tag stack being empty.
+	if empty(l:expr)
+		let l:expr = '^' . expand("<cword>") . '$'
 	endif
 
 	let l:taglist = taglist(escape(l:expr, '~'))
