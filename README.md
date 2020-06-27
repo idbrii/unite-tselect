@@ -19,3 +19,6 @@ If you want to remap `g<C-]>` and `g]`, copy the following lines into your vimrc
     nnoremap g<C-]> :<C-u>Unite -immediately tselect:<C-r>=expand('<cword>')<CR><CR>
     nnoremap g] :<C-u>Unite tselect:<C-r>=expand('<cword>')<CR><CR>
 
+To make a command that behaves like `:tselect`:
+
+    command! -nargs=* Tselect Unite tselect:<args>
